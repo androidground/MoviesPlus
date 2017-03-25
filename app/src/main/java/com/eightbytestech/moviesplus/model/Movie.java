@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * Created by Home on 01/02/2017.
  */
@@ -38,8 +40,11 @@ public class Movie implements Parcelable {
     @SerializedName("vote_count")
     public int voteCount;
 
+    @SerializedName("genres")
+    public List<GenresBean> genres;
 
-    public Movie(int id, String overview, String releaseDate, String posterPath, String backdropPath, long popularity, String title, long voteAverage, int voteCount) {
+
+    public Movie(int id, String overview, String releaseDate, String posterPath, String backdropPath, long popularity, String title, long voteAverage, int voteCount, List<GenresBean> genres) {
 
         this.id = id;
         this.overview = overview;
@@ -50,6 +55,7 @@ public class Movie implements Parcelable {
         this.title = title;
         this.voteAverage = voteAverage;
         this.voteCount = voteCount;
+        this.genres = genres;
     }
 
     @Override
@@ -69,6 +75,7 @@ public class Movie implements Parcelable {
         dest.writeString(title);
         dest.writeFloat(voteAverage);
         dest.writeInt(voteCount);
+        dest.writeArray(genres.toArray());
     }
 
     public Movie(Parcel parcel) {
@@ -81,7 +88,7 @@ public class Movie implements Parcelable {
         this.title = parcel.readString();
         this.voteAverage = parcel.readFloat();
         this.voteCount = parcel.readInt();
-
+        this.genres = parcel.readArrayList()
     }
 
 
@@ -97,5 +104,26 @@ public class Movie implements Parcelable {
             return new Movie[size];
         }
     };
+
+    public static class GenresBean {
+        private int id;
+        private String name;
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
 
 }

@@ -50,6 +50,8 @@ public class MovieListFragment extends Fragment {
     private String posterEndPoint;
     private String posterEndPointSize;
 
+    private int grid_columns;
+
     private ApiUtility apiUtility;
 
     private MovieDBEndpointInterface movieDBEndpointInterface;
@@ -116,6 +118,8 @@ public class MovieListFragment extends Fragment {
         Log.i(TAG, "onCreate");
         setRetainInstance(true);
 
+        grid_columns = (int) getResources().getInteger(R.integer.gallery_columns);
+
         tmdb_end_point = getResources().getString(R.string.moviedb_endpoint);
 
         apiKey = getResources().getString(R.string.moviedb_api_key);
@@ -130,7 +134,7 @@ public class MovieListFragment extends Fragment {
 
         mRecyclerView = (RecyclerView) getActivity().findViewById(R.id.recyclerView);
 
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        /*mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
 
         movieAdapter = new MovieAdapter(getActivity());
 
@@ -140,7 +144,7 @@ public class MovieListFragment extends Fragment {
 
         movieDBEndpointInterface = ApiUtility.MovieDbUtility.getMovieDbEndpointInterface();
 
-        fetchPopularMovies();
+        fetchPopularMovies();*/
 
     }
 
@@ -152,6 +156,19 @@ public class MovieListFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.movie_list, container, false);
         mView = rootView;
+
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), grid_columns));
+
+        movieAdapter = new MovieAdapter(getActivity());
+
+        mRecyclerView.setAdapter(movieAdapter);
+
+        ApiUtility.setMovieDbApiValues(tmdb_end_point, apiKey, language, posterEndPoint, posterEndPointSize);
+
+        movieDBEndpointInterface = ApiUtility.MovieDbUtility.getMovieDbEndpointInterface();
+
+        fetchPopularMovies();
+
         return rootView;
     }
 
@@ -190,6 +207,7 @@ public class MovieListFragment extends Fragment {
 
             @Override
             public void onFailure(Call<MoviesInfo> call, Throwable t) {
+                showErrorMessage();
                 t.printStackTrace();
             }
         });
@@ -208,6 +226,7 @@ public class MovieListFragment extends Fragment {
 
             @Override
             public void onFailure(Call<MoviesInfo> call, Throwable t) {
+                showErrorMessage();
                 t.printStackTrace();
             }
         });

@@ -3,10 +3,12 @@ package com.eightbytestech.moviesplus.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.eightbytestech.moviesplus.MovieListFragment;
 import com.eightbytestech.moviesplus.model.Movie;
 import com.eightbytestech.moviesplus.utility.ApiUtility;
 import com.eightbytestech.moviesplus.R;
@@ -25,6 +27,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHandler> {
     List<Movie> movieList;
     private LayoutInflater mLayouInflater;
     private Context mContext;
+
+    public MovieListFragment.OnMoviePosterSelectedListener onMoviePosterSelectedListener;
 
     public MovieAdapter(Context context) {
         mContext = context;
@@ -51,6 +55,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHandler> {
                 /*Intent intent = new Intent(mContext, MovieDetailActivity.class);
                 intent.putExtra(MovieDetailActivity.EXTRA_MOVIE, movieList.get(moviePosition));
                 mContext.startActivity(intent);*/
+
+                Movie movie = movieList.get(moviePosition);
+                onMoviePosterSelectedListener.onMoviePosterSelected(movie);
             }
         });
         return movieViewHandler;
@@ -60,6 +67,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHandler> {
     public void onBindViewHolder(MovieViewHandler holder, int position) {
         Movie movie = movieList.get(position);
         String imagePath = ApiUtility.MovieDbUtility.getCompletePhotoUrl(movie.posterPath);
+
+        holder.movieTitleView.setText(movie.title);
+        holder.movieTitleView.getBackground().setAlpha(200);
+
+        //holder.movieGenreView.setText(movie.g);
+
         Picasso.with(mContext)
                 //.load("http://image.tmdb.org/t/p/w185" + movie.posterPath)
                 .load(imagePath)
