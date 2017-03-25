@@ -1,23 +1,12 @@
 package com.eightbytestech.moviesplus;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import com.eightbytestech.moviesplus.model.Movie;
 
-
-import com.eightbytestech.moviesplus.dummy.DummyContent;
-
-import java.util.List;
 
 /**
  * An activity representing a list of Movies. This activity
@@ -27,7 +16,14 @@ import java.util.List;
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class MovieListActivity extends AppCompatActivity {
+public class MovieListActivity extends AppCompatActivity implements MovieListFragment.OnMoviePosterSelectedListener {
+
+    private final static String TAG = "#PopularMovies: ";
+
+    public static final String INSTANCE_STATE_TAG = "heres the movie";
+    private static final String MASTER_FRAGMENT_TAG = "master frag tag";
+    public static final String MASTER_FRAGMENT_BUNDLE_ID = "movieFragment";
+    MovieListFragment mMasterFragment;
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -42,26 +38,67 @@ public class MovieListActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitle(getTitle());
-
-        View recyclerView = findViewById(R.id.movie_list);
-        assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);
 
         if (findViewById(R.id.movie_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w600dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
             mTwoPane = true;
+        }
+
+        /*
+        restore the reference to the saved fragment otherwise make a new
+        fragment
+         */
+        if (savedInstanceState != null) {
+            mMasterFragment = (MovieListFragment) getSupportFragmentManager()
+                    .getFragment(savedInstanceState, MASTER_FRAGMENT_BUNDLE_ID);
+        } else {
+            mMasterFragment = new MovieListFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.movie_list_fragment, mMasterFragment, MASTER_FRAGMENT_TAG)
+                    .commit();
         }
     }
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
+    @Override
+    public void onMoviePosterSelected(Movie currentMovie) {
+        if (mTwoPane) {
+            /*
+            pass the current Movie as a parcelable extra and add a DetailFragment
+            to the RHS of the ContentView
+             */
+            Bundle arguments = new Bundle();
+            arguments.putParcelable(INSTANCE_STATE_TAG, currentMovie);
+            MovieDetailFragment fragment = new MovieDetailFragment();
+            fragment.setArguments(arguments);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.movie_detail_container, fragment)
+                    .commit();
+        } else {
+             /*
+            pass the current Movie as an extra and start a new
+            DetailActivity
+             */
+            Intent intent = new Intent(this, MovieDetailActivity.class);
+            intent.putExtra(INSTANCE_STATE_TAG, currentMovie);
+            startActivity(intent);
+        }
     }
 
-    public class SimpleItemRecyclerViewAdapter
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        getSupportFragmentManager().putFragment(outState, MASTER_FRAGMENT_BUNDLE_ID, mMasterFragment);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        getSupportFragmentManager().putFragment(outState, MASTER_FRAGMENT_BUNDLE_ID, mMasterFragment);
+    }
+
+    /*private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
+    }*/
+
+    /*public class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
         private final List<DummyContent.DummyItem> mValues;
@@ -128,5 +165,5 @@ public class MovieListActivity extends AppCompatActivity {
                 return super.toString() + " '" + mContentView.getText() + "'";
             }
         }
-    }
+    }*/
 }

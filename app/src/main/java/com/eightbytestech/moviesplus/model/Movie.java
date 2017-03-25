@@ -11,15 +11,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class Movie implements Parcelable {
 
-    //private String poster_path;
-    //private String overview;
-    //private int id;
-    //private String title;
-    //private String backdrop_path;
-    //private String popularity;
-    //private String vote_count;
-    //private String vote_average;
-
     @SerializedName("id")
     public int id;
 
@@ -47,14 +38,6 @@ public class Movie implements Parcelable {
     @SerializedName("vote_count")
     public int voteCount;
 
-    /*"poster_path": "/WLQN5aiQG8wc9SeKwixW7pAR8K.jpg",
-    "overview": "The quiet life of a terrier named Max is upended when his owner takes in Duke, a stray whom Max instantly dislikes.",
-    "id": 328111,
-    "title": "The Secret Life of Pets",
-    "backdrop_path": "/lubzBMQLLmG88CLQ4F3TxZr2Q7N.jpg",
-    "popularity": 181.40313,
-    "vote_count": 1960,
-    "vote_average": 5.8*/
 
     public Movie(int id, String overview, String releaseDate, String posterPath, String backdropPath, long popularity, String title, long voteAverage, int voteCount) {
 
