@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
+
 import com.eightbytestech.moviesplus.model.Movie;
 
 
@@ -64,21 +66,27 @@ public class MovieListActivity extends AppCompatActivity implements MovieListFra
             pass the current Movie as a parcelable extra and add a DetailFragment
             to the RHS of the ContentView
              */
-            Bundle arguments = new Bundle();
+            /*Bundle arguments = new Bundle();
             arguments.putParcelable(INSTANCE_STATE_TAG, currentMovie);
             MovieDetailFragment fragment = new MovieDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.movie_detail_container, fragment)
-                    .commit();
+                    .commit();*/
+
+            Toast.makeText(this, "Selected Movie is: " + currentMovie.title, Toast.LENGTH_LONG).show();
+
         } else {
              /*
             pass the current Movie as an extra and start a new
             DetailActivity
              */
-            Intent intent = new Intent(this, MovieDetailActivity.class);
+            /*Intent intent = new Intent(this, MovieDetailActivity.class);
             intent.putExtra(INSTANCE_STATE_TAG, currentMovie);
-            startActivity(intent);
+            startActivity(intent);*/
+
+            Toast.makeText(this, "Selected Movie is: " + currentMovie.title, Toast.LENGTH_LONG).show();
+
         }
     }
 

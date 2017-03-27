@@ -7,8 +7,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.eightbytestech.moviesplus.MovieListFragment;
+import com.eightbytestech.moviesplus.model.Genres;
 import com.eightbytestech.moviesplus.model.Movie;
 import com.eightbytestech.moviesplus.utility.ApiUtility;
 import com.eightbytestech.moviesplus.R;
@@ -71,7 +73,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHandler> {
         holder.movieTitleView.setText(movie.title);
         holder.movieTitleView.getBackground().setAlpha(200);
 
-        //holder.movieGenreView.setText(movie.g);
+        List<Genres> genres = movie.genres;
+
+        for (int i=0; i < genres.size(); i++) {
+            Log.i("#GENRES#", genres.get(i).toString());
+        }
 
         Picasso.with(mContext)
                 //.load("http://image.tmdb.org/t/p/w185" + movie.posterPath)

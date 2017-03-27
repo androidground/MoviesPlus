@@ -41,10 +41,10 @@ public class Movie implements Parcelable {
     public int voteCount;
 
     @SerializedName("genres")
-    public List<GenresBean> genres;
+    public List<Genres> genres;
 
 
-    public Movie(int id, String overview, String releaseDate, String posterPath, String backdropPath, long popularity, String title, long voteAverage, int voteCount, List<GenresBean> genres) {
+    public Movie(int id, String overview, String releaseDate, String posterPath, String backdropPath, long popularity, String title, long voteAverage, int voteCount, List<Genres> genres) {
 
         this.id = id;
         this.overview = overview;
@@ -75,7 +75,7 @@ public class Movie implements Parcelable {
         dest.writeString(title);
         dest.writeFloat(voteAverage);
         dest.writeInt(voteCount);
-        dest.writeArray(genres.toArray());
+        dest.writeTypedList(genres);
     }
 
     public Movie(Parcel parcel) {
@@ -88,7 +88,7 @@ public class Movie implements Parcelable {
         this.title = parcel.readString();
         this.voteAverage = parcel.readFloat();
         this.voteCount = parcel.readInt();
-        this.genres = parcel.readArrayList()
+        this.genres = parcel.createTypedArrayList(Genres.CREATOR);
     }
 
 
@@ -104,26 +104,5 @@ public class Movie implements Parcelable {
             return new Movie[size];
         }
     };
-
-    public static class GenresBean {
-        private int id;
-        private String name;
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-    }
 
 }
